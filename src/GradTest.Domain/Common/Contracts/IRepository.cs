@@ -1,3 +1,4 @@
+using GradTest.Shared.Monads;
 namespace GradTest.Domain.Common.Contracts;
 
 public interface IRepository

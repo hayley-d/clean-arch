@@ -21,5 +21,12 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0-preview1" />
     <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BoundedContexts\Orders\Mapping\" />
+    <Folder Include="BoundedContexts\Products\Commands\" />
+    <Folder Include="BoundedContexts\Products\Mapping\" />
+    <Folder Include="BoundedContexts\Products\Queries\" />
+  </ItemGroup>
   
 </Project>

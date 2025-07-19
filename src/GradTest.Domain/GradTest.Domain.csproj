@@ -15,8 +15,4 @@
     <ProjectReference Include="..\GradTest.Shared\GradTest.Shared.csproj" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Entities\" />
-  </ItemGroup>
-
 </Project>
