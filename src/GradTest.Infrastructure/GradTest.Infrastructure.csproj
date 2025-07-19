@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latestmajor</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+    <PackageReference Include="MassTransit" Version="[8.4.1]" />
+    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="[8.4.1]" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GradTest.Application\GradTest.Application.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\GradTest.Domain\GradTest.Domain.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\GradTest.Shared\GradTest.Shared.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BoundedContexts\Users\Repositories\" />
+  </ItemGroup>
+
+</Project>

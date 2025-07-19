@@ -1,0 +1,82 @@
+﻿networks:
+  minimal:
+    name: minimal
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - minimal
+    container_name: MINIMAL-API
+      
+  database:
+    image: postgres:16.3
+    environment:
+      POSTRGES_DB: minimal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Password1
+      ACCEPT_EULA: "Y"
+    container_name: MINIMAL-DATABASE
+    restart: unless-stopped
+    networks:
+      - minimal
+    ports:
+     - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  seq:
+    image: datalust/seq:latest
+    restart: unless-stopped
+    container_name: MINIMAL-SEQ
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_ADMINPASSWORDHASH: FDhgnrnQs//B3Mk6WJqV7FVxYBIH6T4Zhp6v5rSHF7Oei81K0w==
+    ports:
+      - "5341:5341"
+      - "5342:80"
+    networks:
+      - minimal
+    volumes:
+      - type: bind
+        source: ./Seq
+        target: /data
+  
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    networks:
+      - minimal
+    restart: unless-stopped
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    container_name: MINIMAL-AZURITE
+    
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    networks:
+      - minimal
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://DATABASE:5432/postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: Password1
+      KC_HOSTNAME: localhost
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    container_name: MINIMAL-KEYCLOAK
+    command:
+      - "start-dev"
+
+volumes:
+  pgdata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./Postgres

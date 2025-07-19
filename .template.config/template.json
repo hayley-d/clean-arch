@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Hanu Feenstra",
+  "classifications": [
+    "Web API"
+  ],
+  "name": "Codehesion Clean Architecture Minimal APIs",
+  "identity": "Codehesion.Minimal",
+  "groupIdentity": "Codehesion.Minimal",
+  "shortName": "codehesion-minimal",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "Minimal",
+  "preferNameDirectory": true,
+  "sources": [
+    {
+      "exclude": [
+        "**/.git/**",
+        "**/.idea/**",
+        "**/bin/**",
+        "**/obj/**",
+        "**/.vs/**",
+        "**/*.user",
+        "**/*.suo"
+      ]
+    }
+  ]
+}

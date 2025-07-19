@@ -1,0 +1,3 @@
+namespace GradTest.Infrastructure;
+
+public interface IInfrastructureAssemblyMarker;
