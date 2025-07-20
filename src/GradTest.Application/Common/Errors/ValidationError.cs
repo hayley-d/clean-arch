@@ -5,7 +5,7 @@ namespace GradTest.Application.Common.Errors;
 public class ValidationError: AbstractError
 {
     public override required string Title { get; init; }
-    public override required string Detail { get; init; }
+    public override required string ErrorDetail { get; init; }
     public required IDictionary<string, string[]> Errors { get; init; }
 
     private ValidationError() { }
@@ -15,7 +15,7 @@ public class ValidationError: AbstractError
         return new ValidationError
         {
             Title = "Validation failed",
-            Detail = "One or more validation errors occurred",
+            ErrorDetail = "One or more validation errors occurred",
             Errors = AggregateValidationErrors(validationResults)
         };
     }

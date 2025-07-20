@@ -3,7 +3,7 @@ namespace GradTest.Shared.Errors;
 public class NotFoundError: AbstractError
 {
     public override required string Title { get; init; }
-    public override required string Detail { get; init; }
+    public override required string ErrorDetail { get; init; }
 
     private NotFoundError() { }
 
@@ -12,7 +12,7 @@ public class NotFoundError: AbstractError
         return new NotFoundError
         {
             Title = "Entity Not Found",
-            Detail = $"Could not find {entity} with Id: {key}" 
+            ErrorDetail = $"Could not find {entity} with Id: {key}" 
         };
     }
 }

@@ -26,7 +26,8 @@
     <Folder Include="BoundedContexts\Orders\Mapping\" />
     <Folder Include="BoundedContexts\Products\Commands\" />
     <Folder Include="BoundedContexts\Products\Mapping\" />
-    <Folder Include="BoundedContexts\Products\Queries\" />
+    <Folder Include="Common\Pipelines\" />
+    <Folder Include="Common\Services\" />
   </ItemGroup>
   
 </Project>

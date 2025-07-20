@@ -1,6 +1,4 @@
 using FluentValidation;
-using GradTest.Application.Common.Pipelines;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,9 +25,6 @@ public static class WebApplicationBuilderExtensions
             x.RegisterServicesFromAssembly(applicationAssembly);
         });
 
-        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
-        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
-        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnitOfWorkPipelineBehavior<,>));
     }
     
     private static void AddFluentValidation(this WebApplicationBuilder builder)

@@ -3,12 +3,12 @@ namespace GradTest.Shared.Errors;
 public sealed class GenericError: AbstractError
 {
     public override required string Title { get; init; }
-    public override required string Detail { get; init; }
+    public override required string ErrorDetail { get; init; }
     
     public static readonly GenericError None = new GenericError
     {
         Title = string.Empty,
-        Detail = string.Empty
+        ErrorDetail = string.Empty
     };
 
     private GenericError() { }
@@ -18,7 +18,7 @@ public sealed class GenericError: AbstractError
         return new GenericError
         {
             Title = title,
-            Detail = details
+            ErrorDetail = details
         };
     }
 }
