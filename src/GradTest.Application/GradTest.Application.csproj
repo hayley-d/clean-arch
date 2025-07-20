@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BoundedContexts\Products\Commands\" />
     <Folder Include="Common\Pipelines\" />
     <Folder Include="Common\Services\" />
   </ItemGroup>

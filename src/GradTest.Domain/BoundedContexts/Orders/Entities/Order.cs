@@ -21,7 +21,7 @@ public class Order : EntityBase
         Items = items;
     }
 
-    public static Order Create(Guid id, Guid userId, List<OrderItem> items)
+    public static Order Create( Guid userId, List<OrderItem> items)
     {
         var order = new Order(userId, items);
         
