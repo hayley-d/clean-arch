@@ -3,7 +3,7 @@ namespace GradTest.Infrastructure.Common.Errors;
 public class DatabaseError: AbstractError
 {
     public override required string Title { get; init; }
-    public override required string Detail { get; init; }
+    public override required string ErrorDetail { get; init; }
 
     private DatabaseError() { }
 
@@ -12,7 +12,7 @@ public class DatabaseError: AbstractError
         return new DatabaseError
         {
             Title = "Database Error",
-            Detail = detail
+            ErrorDetail = detail
         };
     }
 }
