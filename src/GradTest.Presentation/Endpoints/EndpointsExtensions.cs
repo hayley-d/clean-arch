@@ -1,4 +1,5 @@
-using GradTest.Presentation.Endpoints.Users;
+using GradTest.Presentation.Endpoints.Orders;
+using GradTest.Presentation.Endpoints.Products;
 
 namespace GradTest.Presentation.Endpoints;
 
@@ -6,6 +7,7 @@ public static class EndpointsExtensions
 {
     public static void MapApiEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapUsersEndpoints();
+        app.MapProductsEndpoints();
+        app.MapOrdersEndpoints();
     }
 }

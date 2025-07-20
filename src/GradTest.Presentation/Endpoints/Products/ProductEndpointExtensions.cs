@@ -1,6 +1,12 @@
 namespace GradTest.Presentation.Endpoints.Products;
 
-public class ProductEndpointExtensions
+public static class ProductEndpointExtensions
 {
-    
+    public static void MapProductsEndpoints(this IEndpointRouteBuilder app)
+    {
+        app
+            .MapCreateProductEndpoint()
+            .MapGetProductByIdEndpoint()
+            .MapListProductsEndpoint();
+    }
 }

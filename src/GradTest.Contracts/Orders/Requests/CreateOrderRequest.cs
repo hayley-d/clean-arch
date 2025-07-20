@@ -1,6 +1,8 @@
+using GradTest.Domain.BoundedContexts.Orders.Entities;
+
 namespace GradTest.Contracts.Orders.Requests;
 
 public class CreateOrderRequest
 {
-    public Dictionary<Guid, int> Items { get; init; }
+    public List<OrderItem> Items { get; init; }
 }

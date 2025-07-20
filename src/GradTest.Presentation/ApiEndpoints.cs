@@ -3,13 +3,19 @@ namespace GradTest.Presentation;
 public static class ApiEndpoints
 {
     private const string ApiBase = "api";
-
-    public static class Users
+    
+    public static class Products
     {
-        private const string UserBase = $"{ApiBase}/users";
-
-        public const string GetUserById = $"{UserBase}/{{userId}}";
-        public const string CreateUser = UserBase;
-        public const string GetMyUser = $"{UserBase}/me";
+        private const string ProductBase = $"{ApiBase}/products";
+        public const string GetProductById = $"{ProductBase}/{{id}}";
+        public const string CreateProduct = ProductBase;
+        public const string ListProducts = ProductBase;
+    }
+    
+    public static class Orders
+    {
+        private const string OrderBase = $"{ApiBase}/orders";
+        public const string GetOrderById = $"{OrderBase}/{{id}}";
+        public const string CreateOrder = OrderBase;
     }
 }
