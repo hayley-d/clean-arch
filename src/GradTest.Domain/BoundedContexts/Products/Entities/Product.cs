@@ -12,18 +12,18 @@ public class Product
     public string Description { get; init; }
     public decimal Price { get; init; }
     public int Quantity { get; init; }
-    public Category Cateogry { get; init; }
+    public Category Category { get; init; }
     
     private Product() { }
 
-    private Product(string name, string description, decimal price, int quantity, Category cateogry)
+    private Product(string name, string description, decimal price, int quantity, Category category)
     {
         Id = Guid.NewGuid();
         Name = name;
         Description = description;
         Price = price;
         Quantity = quantity;
-        Cateogry = cateogry;
+        Category = category;
     }
 
     public static Result<Product> Create(string name, string description, decimal price, int quantity, Category cateogry)
