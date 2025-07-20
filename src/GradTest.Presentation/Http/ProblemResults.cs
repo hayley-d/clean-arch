@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using GradTest.Domain.Common.Errors;
+using GradTest.Domain.Common.Rules;
 using GradTest.Presentation.Common.Constants;
 
 namespace GradTest.Presentation.Http;
@@ -31,7 +31,7 @@ public static class ProblemResults
     public static ProblemHttpResult Error(RuleError ruleError)
     {
         return TypedResults.Problem(
-            ruleError.Detail, 
+            ruleError.ErrorDetail, 
             null,
             StatusCodes.Status400BadRequest,
             ruleError.Title,
@@ -42,7 +42,7 @@ public static class ProblemResults
     public static ProblemHttpResult Conflict(RuleError ruleError)
     {
         return TypedResults.Problem(
-            ruleError.Detail, 
+            ruleError.ErrorDetail, 
             null,
             StatusCodes.Status409Conflict, 
             ruleError.Title,
@@ -53,7 +53,7 @@ public static class ProblemResults
     public static ProblemHttpResult NotFound(RuleError ruleError)
     {
         return TypedResults.Problem(
-            ruleError.Detail, 
+            ruleError.ErrorDetail, 
             null,
             StatusCodes.Status404NotFound,
             ruleError.Title,
@@ -64,7 +64,7 @@ public static class ProblemResults
     public static ProblemHttpResult TooManyRecords(RuleError ruleError)
     {
         return TypedResults.Problem(
-            ruleError.Detail,
+            ruleError.ErrorDetail,
             null,
             StatusCodes.Status413RequestEntityTooLarge,
             "Too many records",
