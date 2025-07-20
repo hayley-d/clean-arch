@@ -1,24 +1,13 @@
-using System.Globalization;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
-using Microsoft.ApplicationInsights.Extensibility;
+using FluentValidation;
+using GradTest.Application.BoundedContexts.Orders.Commands;
+using GradTest.Application.BoundedContexts.Products.Commands;
+using GradTest.Domain.BoundedContexts.Products.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using GradTest.Application.Common.Services;
-using GradTest.Domain.BoundedContexts.Users.Policies;
-using GradTest.Domain.BoundedContexts.Users.Roles;
 using GradTest.Presentation.Auth.Claims;
 using GradTest.Presentation.Auth.Services;
-using GradTest.Presentation.Middleware;
-using OpenTelemetry;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using Serilog;
-using Serilog.Enrichers.Span;
-using Serilog.Events;
-using Serilog.Sinks.OpenTelemetry;
+using MediatR;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace GradTest.Presentation.Common.Configuration.Extensions;
@@ -142,7 +131,6 @@ public static class WebApplicationBuilderExtensions
     private static void AddApiServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
     }
     
     private static void AddCors(this WebApplicationBuilder builder)
@@ -154,4 +142,133 @@ public static class WebApplicationBuilderExtensions
             policy.AllowAnyMethod();
         }));
     }
+    
+    
+    private static WebApplicationBuilder SetupCors(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("Application",
+                corsPolicyBuilder => corsPolicyBuilder.WithOrigins("http://localhost:5073/")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+        });
+        
+        return builder;
+    }
+
+    private static void SetupMediatR(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
+        
+        builder.Services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(CreateProductCommand).Assembly));
+        
+        // builder.Services.AddMediatR(cfg =>
+        //     cfg.RegisterServicesFromAssembly(typeof(UpdateProductCommand).Assembly));
+        //
+        // builder.Services.AddMediatR(cfg =>
+        //     cfg.RegisterServicesFromAssembly(typeof(DeleteProductCommand).Assembly));
+
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
+
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+ 
+    }
+    
+    private static WebApplicationBuilder SetupSwaggerDoc(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddEndpointsApiExplorer();
+        
+        const string displayName = "Grad Test API";
+        
+        var authorizationUrl = builder.Configuration["OIDC:AuthorizeUrl"];
+        
+        var tokenUrl = builder.Configuration["OIDC:TokenUrl"];
+        
+        if (string.IsNullOrWhiteSpace(authorizationUrl) || string.IsNullOrWhiteSpace(tokenUrl))
+        {
+            throw new InvalidOperationException("Missing OIDC configuration for Swagger.");
+        }
+        
+        builder.Services.AddSwaggerGen(options =>
+        {
+            //options.SchemaFilter<SmartEnumSchemaFilter<Category>>(); 
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = displayName,
+                Version = "v1"
+            });
+    
+            options.AddSecurityDefinition("OIDC", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.OAuth2,
+                Flows = new OpenApiOAuthFlows
+                {
+                    AuthorizationCode = new OpenApiOAuthFlow
+                    {
+                        AuthorizationUrl = new Uri(authorizationUrl),
+                        TokenUrl = new Uri(tokenUrl),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { "openid", "OpenID Connect scope" },
+                            { "profile", "Profile scope" },
+                            { "email", "Email scope" }
+                        }
+                    }
+                }
+            });
+    
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "OIDC"
+                        }
+                    },
+                    new[] { "openid", "profile", "email" }
+                }
+            });
+        });
+        
+        return builder;
+    }
+    
+    private static WebApplicationBuilder SetupHangfireServices(this WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddHangfire(config => config.UsePostgreSqlStorage(connectionString));
+        builder.Services.AddHangfireServer();
+        return builder;
+    }
+
+    private static WebApplicationBuilder SetupRucurringJobs(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHttpClient<IExchangeRateService, ExchangeRateService>();
+        builder.Services.AddScoped<IExchangeRateSyncJob, ExchangeRateSyncJob>();
+        
+        return builder;
+    }
+    
+    public static void ConfigureSwaggerUi(this WebApplication app, IHostApplicationBuilder builder)
+    {
+        if (!app.Environment.IsDevelopment()) return;
+        
+        app.UseSwagger();
+        
+        app.UseSwaggerUI(options =>
+        {
+            options.OAuthClientId(builder.Configuration["OIDC:ClientId"]);
+            options.OAuthUsePkce(); 
+            options.OAuthAppName("Grad Test API");
+        });
+    }
+
 }

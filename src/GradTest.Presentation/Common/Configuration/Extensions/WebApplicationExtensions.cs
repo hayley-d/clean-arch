@@ -1,7 +1,6 @@
 using AspNetCore.Swagger.Themes;
 using Microsoft.EntityFrameworkCore;
 using GradTest.Presentation.Endpoints;
-using GradTest.Infrastructure.Common.Configuration.BlobStorage;
 using GradTest.Infrastructure.Persistence;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -29,8 +28,6 @@ public static class WebApplicationExtensions
         }
 
         await app.MigrateAsync(args);
-
-        //await app.InitializeBlobStorage();
     }
 
     private static void AddSwaggerDoc(this WebApplication app)
@@ -45,20 +42,11 @@ public static class WebApplicationExtensions
             app.UseSwaggerUI(style: Style.Dark, c =>
             {
                 c.OAuthClientId(authClientId);
-                c.OAuthAppName("My API - Swagger");
+                c.OAuthAppName("Grad Test .NET");
                 c.OAuthUsePkce();
             });
         }
     }
-    
-    // private static async Task InitializeBlobStorage(this WebApplication app)
-    // {
-    //     using var scope = app.Services.CreateScope();
-    //     var services = scope.ServiceProvider;
-    //
-    //     var initializer = services.GetRequiredService<IBlobContainerInitializer>();
-    //     await initializer.InitializeContainerAsync();
-    // }
     
     private static async Task MigrateAsync(this WebApplication app, string[] args)
     {

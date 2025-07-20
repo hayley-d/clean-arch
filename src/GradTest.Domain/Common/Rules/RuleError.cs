@@ -1,10 +1,12 @@
+using GradTest.Shared.Errors;
+
 namespace GradTest.Domain.Common.Rules;
 
 
-public sealed class RuleError
+public sealed class RuleError : AbstractError
 {
-    public required string Title { get; init; }
-    public required string ErrorDetail { get; init; }
+    public override required string Title { get; init; }
+    public override required string ErrorDetail { get; init; }
 
     private RuleError() { }
     

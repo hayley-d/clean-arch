@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using GradTest.Application.Common.Errors;
-using GradTest.Domain.Common.Errors;
+using GradTest.Domain.Common.Rules;
 using GradTest.Infrastructure.Common.Errors;
 using GradTest.Presentation.Common.Constants;
-using GradTest.Presentation.Common.Errors;
 using GradTest.Shared.Errors;
 
 namespace GradTest.Presentation.Common.Extensions;
@@ -17,8 +16,6 @@ public static class ErrorResults
         ValidationError e => Validation(e),
         NotFoundError e => NotFound(e),
         DatabaseError e => InternalServerError(e),
-        ContentTypeError e => UnsupportedMediaType(e),
-        BlobStorageError e => InternalServerError(e),
         not null => BadRequest(error),
         _ => UnknownError()
     };
@@ -27,7 +24,7 @@ public static class ErrorResults
     private static ProblemHttpResult NotFound(NotFoundError error)
     {
         return TypedResults.Problem(
-            error.Detail,
+            error.ErrorDetail,
             null,
             StatusCodes.Status404NotFound,
             error.Title,
@@ -39,7 +36,7 @@ public static class ErrorResults
     {
         return TypedResults.ValidationProblem(
             error.Errors,
-            error.Detail,
+            error.ErrorDetail,
             null,
             error.Title,
             StatusCodeLinks.BadRequest
@@ -49,7 +46,7 @@ public static class ErrorResults
     private static ProblemHttpResult BadRequest(AbstractError error)
     {
         return TypedResults.Problem(
-            error.Detail, 
+            error.ErrorDetail, 
             null,
             StatusCodes.Status400BadRequest, 
             error.Title,
@@ -71,22 +68,11 @@ public static class ErrorResults
     private static ProblemHttpResult InternalServerError(AbstractError error)
     {
         return TypedResults.Problem(
-            error.Detail, 
+            error.ErrorDetail, 
             null,
             StatusCodes.Status500InternalServerError, 
             error.Title,
             StatusCodeLinks.InternalServerError
-        );
-    }
-    
-    private static ProblemHttpResult UnsupportedMediaType(AbstractError error)
-    {
-        return TypedResults.Problem(
-            error.Detail, 
-            null,
-            StatusCodes.Status415UnsupportedMediaType, 
-            error.Title,
-            StatusCodeLinks.UnsupportedMediaType
         );
     }
 }

@@ -45,4 +45,8 @@
     <ProjectReference Include="..\GradTest.Application\GradTest.Application.csproj" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Auth\Services\" />
+  </ItemGroup>
+
 </Project>

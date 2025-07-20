@@ -5,7 +5,7 @@ namespace GradTest.Presentation.Common.Errors;
 public class ContentTypeError: AbstractError
 {
     public override required string Title { get; init; }
-    public override required string Detail { get; init; }
+    public override required string ErrorDetail { get; init; }
 
     private ContentTypeError() { }
 
@@ -14,7 +14,7 @@ public class ContentTypeError: AbstractError
         return new ContentTypeError
         {
             Title = "Content type not supported",
-            Detail = "The file extension is not supported by the application"
+            ErrorDetail = "The file extension is not supported by the application"
         };
     }
 }
