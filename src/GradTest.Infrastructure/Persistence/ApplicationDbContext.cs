@@ -1,77 +1,60 @@
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using GradTest.Application.Common.Services;
-using GradTest.Domain.BoundedContexts.Files.Entities;
-using GradTest.Domain.BoundedContexts.Users.Entities;
-using GradTest.Domain.Common.Entities;
+using GradTest.Domain.BoundedContexts.Orders.Entities;
+using GradTest.Domain.BoundedContexts.Products.Entities;
+using GradTest.Infrastructure.BoundedContexts.Products.ValueConvertrs;
 using GradTest.Infrastructure.Common.Errors;
-using GradTest.Infrastructure.Common.Configuration.Extensions;
 
 namespace GradTest.Infrastructure.Persistence;
 
 public class ApplicationDbContext: DbContext
 {
-    private readonly ICurrentUserService _currentUserService;
+    public DbSet<Order> Orders { get; set; } = null!;
+    public DbSet<OrderItem> OrderItems { get; set; } = null!;
+    public DbSet<Product> Products { get; set; } = null!;
 
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Blob> Blobs { get; set; } = null!;
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUserService currentUserService)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
-        _currentUserService = currentUserService;
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.AddInboxStateEntity(builder => builder.ToTable("inboxState", "massTransit"));
-        modelBuilder.AddOutboxStateEntity(builder => builder.ToTable("outboxState", "massTransit"));
-        modelBuilder.AddOutboxMessageEntity(builder => builder.ToTable("outboxMessage", "massTransit"));
+        modelBuilder.Entity<Order>(order =>
+        {
+            order.HasKey(o => o.Id);
+
+            order.HasMany(order => order.Items)
+                .WithOne(item => item.Order)
+                .HasForeignKey(item => item.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
         
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(IInfrastructureAssemblyMarker).Assembly);
-        modelBuilder.ConfigureISoftDeletable();
-        modelBuilder.ConfigureIAuditable();
-        modelBuilder.ApplyHashIndexToEntityIdField();
-    }
+        modelBuilder.Entity<OrderItem>()
+            .HasIndex(item => new { item.OrderId, item.ProductId })
+            .IsUnique();
 
-    private void UpdateAuditableState()
-    {
-        foreach (var entry in ChangeTracker.Entries<IAuditable>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.SetCreatedBy(_currentUserService.GetUserIdFromToken());
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.SetModifiedBy(_currentUserService.GetUserIdFromToken());
-                    break;
-            }
-        }
-    }
+        modelBuilder.Entity<Product>()
+            .Property(p => p.Category)
+            .HasConversion(new CategoryNameConverter());
 
-    private void UpdateSoftDeletableState()
-    {
-        foreach (var entry in ChangeTracker.Entries<ISoftDeletable>())
+
+        modelBuilder.Entity<OrderItem>(item =>
         {
-            if (entry.State is EntityState.Deleted)
-            {
-                entry.Entity.Delete();
-                entry.State = EntityState.Modified;
-                entry.Entity.SetDeletedBy(_currentUserService.GetUserIdFromToken());
-            }
-        }
+            item.HasKey(i => i.Id);
+
+            item.HasOne(item => item.Product)
+                .WithMany() 
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Restrict); 
+        });
     }
 
     public new async Task<Result<int>> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            UpdateAuditableState();
-            UpdateSoftDeletableState();
-            
             var count = await base.SaveChangesAsync(cancellationToken);
             return Result<int>.Success(count);
         }
