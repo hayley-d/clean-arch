@@ -35,16 +35,7 @@ public class GetProductByIdQuery : IQuery<Result<ProductResponse>>
                 return Result.Error(GenericError.Create("Product not found", "Product not found in the database."));
             }
 
-            var response = new ProductResponse
-            {
-                ProductId = product.Id,
-                Name = product?.Name,
-                Description = product?.Description,
-                Price = (decimal)product?.Price,
-                Quantity = (int)product?.Quantity,
-                Category = product?.Category.Name,
-
-            };
+            var response = Mapping.ProductExtensions.ToResponse(product);
             
             return Result<ProductResponse>.Success(response);
         }
