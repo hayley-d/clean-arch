@@ -29,6 +29,8 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
         
         public async Task<Result<OrderResponse>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
+
+
             var createOrderResult = Order.Create(request.UserId, request.Items);
 
             _orderRepository.Add(createOrderResult);
