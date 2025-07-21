@@ -96,7 +96,7 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
                 return Result.Error(saveResult.ErrorValue);
             }
             
-            var response = createOrderResult.ToResponse();
+            var response = createOrderResult.ToResponse(rate.Value);
         
             return Result<OrderResponse>.Success(response);
         }

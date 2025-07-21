@@ -7,6 +7,8 @@ public class OrderResponse
      public Guid OrderId { get; init; }
      public Guid CustomerId { get; init; }
      public List<OrderItemResponse> Items { get; init; }
+     
+     public decimal ZarExchangeRate { get; init; }
 }
 
 public class OrderItemResponse
