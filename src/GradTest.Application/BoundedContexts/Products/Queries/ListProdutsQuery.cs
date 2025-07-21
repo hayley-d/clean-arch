@@ -1,7 +1,8 @@
+using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Products.Responses;
 using GradTest.Domain.BoundedContexts.Products.Repositories;
+using GradTest.Shared.Monads;
 using MediatR;
-using Microsoft.AspNetCore.Http.Metadata;
 
 namespace GradTest.Application.BoundedContexts.Products.Queries;
 

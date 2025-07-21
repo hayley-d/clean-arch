@@ -1,6 +1,8 @@
+using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Orders.Responses;
-using GradTest.Domain.BoundedContexts.Orders.Entities;
 using GradTest.Domain.BoundedContexts.Orders.Repositories;
+using GradTest.Shared.Errors;
+using GradTest.Shared.Monads;
 using MediatR;
 
 namespace GradTest.Application.BoundedContexts.Orders.Queries;

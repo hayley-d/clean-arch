@@ -1,4 +1,5 @@
 using FluentValidation.Results;
+using GradTest.Shared.Errors;
 
 namespace GradTest.Application.Common.Errors;
 

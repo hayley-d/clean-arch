@@ -1,3 +1,4 @@
+using GradTest.Shared.Monads;
 using MediatR;
 
 namespace GradTest.Application.Common.Contracts;
