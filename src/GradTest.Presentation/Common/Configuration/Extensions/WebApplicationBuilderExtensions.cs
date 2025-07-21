@@ -23,8 +23,6 @@ public static class WebApplicationBuilderExtensions
     {
         builder.AddAuthentication();
         
-        //builder.AddAuthorization();
-        
         builder.AddSwagger();
         
         builder.AddApiServices();
@@ -69,17 +67,6 @@ public static class WebApplicationBuilderExtensions
             });
     }
     
-    private static void AddAuthorization(this WebApplicationBuilder builder)
-    {
-        // builder.Services
-        //     .AddAuthorizationBuilder()
-        //     .AddPolicy(Policies.Admin, policy =>
-        //     {
-        //         policy.RequireRole(nameof(Role.Admin));
-        //         policy.RequireAuthenticatedUser();
-        //     });
-    }
-
     private static void AddSwagger(this WebApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();
@@ -148,19 +135,19 @@ public static class WebApplicationBuilderExtensions
     }
     
     
-    private static WebApplicationBuilder SetupCors(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("Application",
-                corsPolicyBuilder => corsPolicyBuilder.WithOrigins("http://localhost:5073/")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-        });
-        
-        return builder;
-    }
+    // private static WebApplicationBuilder SetupCors(this WebApplicationBuilder builder)
+    // {
+    //     builder.Services.AddCors(options =>
+    //     {
+    //         options.AddPolicy("Application",
+    //             corsPolicyBuilder => corsPolicyBuilder.WithOrigins("http://localhost:5073/")
+    //                 .AllowAnyMethod()
+    //                 .AllowAnyHeader()
+    //                 .AllowCredentials());
+    //     });
+    //     
+    //     return builder;
+    // }
 
     private static void SetupMediatR(this WebApplicationBuilder builder)
     {

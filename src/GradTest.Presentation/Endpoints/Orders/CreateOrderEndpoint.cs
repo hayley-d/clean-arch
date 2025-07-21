@@ -31,7 +31,8 @@ public static class CreateOrderEndpoint
                     onError: error => ErrorResults.Map(error)
                 );
             })
-            .WithName(Name);
+            .WithName(Name)
+            .RequireAuthorization();
         
         return app;
     }
