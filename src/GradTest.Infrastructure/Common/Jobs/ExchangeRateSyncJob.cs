@@ -1,5 +1,7 @@
 using GradTest.Application.Common.Services;
+using GradTest.Infrastructure.Common.Errors;
 using GradTest.Infrastructure.Persistence;
+using GradTest.Shared.Monads;
 using Microsoft.Extensions.Logging;
 
 namespace GradTest.Shared.Jobs;
@@ -25,6 +27,13 @@ public class ExchangeRateSyncJob: IExchangeRateSyncJob
         try
         {
             var rate = await _exchangeRateService.GetExchangeRateAsync();
+            
+            if (rate == null)
+            {
+                _logger.LogError("Exchange rate could not be retrieved.");
+                return;
+            }
+
          
             if (rate is not null)
             {

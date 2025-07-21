@@ -37,6 +37,7 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _exchangeRateRepository = exchangeRateRepository;
+            _exchangeRateService = exchangeRateService;
         }
         
         public async Task<Result<OrderResponse>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)

@@ -16,10 +16,10 @@ public class ExchangeRateService: IExchangeRateService
    }
    
    private readonly HttpClient _client;
-   private readonly IConfiguration? _config;
+   private readonly IConfiguration _config;
    private readonly ILogger<ExchangeRateService> _logger;
 
-   public ExchangeRateService(HttpClient client, ILogger<ExchangeRateService> logger, IConfiguration? config = null)
+   public ExchangeRateService(HttpClient client, ILogger<ExchangeRateService> logger, IConfiguration config)
    {
       _client = client;
       _config = config;
