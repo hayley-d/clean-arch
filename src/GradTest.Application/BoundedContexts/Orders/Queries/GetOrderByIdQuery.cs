@@ -1,3 +1,4 @@
+using GradTest.Application.BoundedContexts.Orders.Mapping;
 using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Orders.Responses;
 using GradTest.Domain.BoundedContexts.OrderItems.Repositories;
@@ -40,20 +41,9 @@ public class GetOrderByIdQuery : IQuery<Result<OrderResponse>>
 
             var items = await _orderItemRepository.GetOrderItemsAsync(order.Id, cancellationToken);
             
-            var responseItems = items.Select(orderItem => 
-                new OrderItemResponse
-                {
-                    ProductId = orderItem.ProductId, Quantity = orderItem.Quantity, 
-                    
-                })
-                .ToList();
+            var responseItems = items.Select(orderItem => OrderExtensions.ToOrderItemResponse(orderItem)).ToList();
 
-            var orderResponse = new OrderResponse
-            {
-                OrderId = order.Id,
-                CustomerId = Guid.NewGuid(),
-                Items = responseItems,
-            };
+            var orderResponse = OrderExtensions.ToResponse(order);
 
             return Result<OrderResponse>.Success(orderResponse);
         }
