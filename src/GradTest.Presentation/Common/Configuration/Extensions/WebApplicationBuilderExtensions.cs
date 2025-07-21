@@ -177,7 +177,7 @@ public static class WebApplicationBuilderExtensions
         //     cfg.RegisterServicesFromAssembly(typeof(DeleteProductCommand).Assembly));
 
         builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
-        builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateProductCommandValidator>();
 
         //builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
  

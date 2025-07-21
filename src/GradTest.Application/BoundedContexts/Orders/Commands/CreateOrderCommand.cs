@@ -41,7 +41,13 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
 
             foreach (var item in request.Items)
             {
+                if (item.Quantity <= 0)
+                {
+                    return Result.Error(GenericError.Create("Invalid product quantity", "Quantity value must be greater than zero"));
+                }
+                
                 itemsSet.Add(item.ProductId, item.Quantity);
+                
                 var product = await _productRepository.TryGetByIdAsync(item.ProductId, cancellationToken);
                 
                 if (product is null)
@@ -87,5 +93,10 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.Items)
             .NotNull()
             .NotEmpty();
+
+        RuleForEach(x => x.Items).ChildRules(item =>
+        {
+            item.RuleFor(x => x.Quantity).GreaterThan(0).LessThanOrEqualTo(10000);
+        });
     }
 }

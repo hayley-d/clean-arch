@@ -27,7 +27,7 @@ public static class CreateOrderEndpoint
                 var result = await sender.Send(command, ct);
             
                 return result.Match(
-                    onSuccess: response => TypedResults.Created($"/api/orders", response), 
+                    onSuccess: response => TypedResults.Created($"/api/orders", response.OrderId), 
                     onError: error => ErrorResults.Map(error)
                 );
             })

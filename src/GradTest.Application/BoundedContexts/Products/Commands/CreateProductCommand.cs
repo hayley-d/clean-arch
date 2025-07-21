@@ -1,3 +1,4 @@
+using FluentValidation;
 using GradTest.Application.BoundedContexts.Products.Mapping;
 using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Products.Responses;
@@ -65,5 +66,39 @@ public class CreateProductCommand : ICommand<Result<ProductResponse>>
         
             return Result<ProductResponse>.Success(response);
         }
+    }
+}
+
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+{
+    public CreateProductCommandValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .MaximumLength(50)
+            .MinimumLength(3)
+            .NotNull();
+
+        RuleFor(x => x.Description)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(500)
+            .MinimumLength(3);
+        
+        RuleFor(x => x.Price)
+            .GreaterThan(0)
+            .LessThan(10000)
+            .NotNull()
+            .NotEmpty();
+        
+        RuleFor(x => x.Quantity)
+            .GreaterThan(0)
+            .LessThan(10000)
+            .NotNull()
+            .NotEmpty();
+        
+        RuleFor(x => x.Category)
+            .NotNull()
+            .NotEmpty();
     }
 }
