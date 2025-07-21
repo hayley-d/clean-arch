@@ -1,25 +1,49 @@
 using GradTest.Contracts.Products.Responses;
+using GradTest.Domain.BoundedContexts.Products.Repositories;
 using MediatR;
 
 namespace GradTest.Application.BoundedContexts.Products.Queries;
 
-public class GetProductByIdQuery(Guid ProductId) : IQuery<Result<ProductResponse>>
+public class GetProductByIdQuery : IQuery<Result<ProductResponse>>
 {
+    
+    public Guid ProductId { get; set; }
+
+    public GetProductByIdQuery(Guid productId)
+    {
+        ProductId = productId;
+    }
+    
     internal sealed class GetProductByQueryHandler : IRequestHandler<GetProductByIdQuery, Result<ProductResponse>>
     {
-        public Task<Result<ProductResponse>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        private readonly IProductRepository _productRepository;
+
+        public GetProductByQueryHandler(IProductRepository productRepository)
         {
-            return Task.FromResult<Result<ProductResponse>>(new ProductResponse());
+            _productRepository = productRepository;
         }
-    }
-}
+        
+        public async Task<Result<ProductResponse>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.TryGetByIdAsync(request.ProductId, cancellationToken);
+            
+            if (product is null)
+            {
+                return Result.Error(GenericError.Create("Product not found", "Product not found in the database."));
+            }
 
-public class GetMyUserQuery: IQuery<Result<Guid>>;
+            var response = new ProductResponse
+            {
+                ProductId = product.Id,
+                Name = product?.Name,
+                Description = product?.Description,
+                Price = (decimal)product?.Price,
+                Quantity = (int)product?.Quantity,
+                Category = product?.Category.Name,
 
-internal sealed class GetMyUserQueryHandler : IRequestHandler<GetMyUserQuery, Result<Guid>>
-{
-    public Task<Result<Guid>> Handle(GetMyUserQuery request, CancellationToken cancellationToken)
-    {
-        return Task.FromResult<Result<Guid>>(Guid.NewGuid());
+            };
+            
+            return Result<ProductResponse>.Success(response);
+        }
     }
 }

@@ -15,7 +15,12 @@ public class ProductRepository : BaseRepository, IProductRepository
     {
         return Context.Products.FirstOrDefaultAsync(product => product.Id == productId, cancellationToken);
     }
-    
+
+    public Task<List<Product>> ListAsync(CancellationToken cancellationToken = default)
+    {
+        return Context.Products.ToListAsync(cancellationToken);
+    }
+
     public Task<Product?> TryGetByNameAsync(Guid productName, CancellationToken cancellationToken = default)
     {
         return Context.Products.FirstOrDefaultAsync(product => product.Name.Equals(productName), cancellationToken);

@@ -33,21 +33,42 @@ public class CreateProductCommand : ICommand<Result<ProductResponse>>
             _productRepository = productRepository;
         }
         
-        public Task<Result<ProductResponse>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Result<ProductResponse>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var createProductrResult = Product.Create(request.Name, request.Description, request.Price, request.Quantity, request.Category);
+            var createProductrResult = Product.Create(
+                request.Name, 
+                request.Description, 
+                request.Price, 
+                request.Quantity, 
+                request.Category
+            );
             
             if (createProductrResult.IsError)
             {
-                var errorResult = Result.Error(createProductrResult.ErrorValue);
-                return Task.FromResult<Result<ProductResponse>>(errorResult);
+                return Result.Error(GenericError.Create("Product creation error", "Product could not be created."));
             }
+
+            var product = createProductrResult.Value;
             
-            _productRepository.Add(createProductrResult.Value);
+            _productRepository.Add(product);
+            var saveResult = await _productRepository.SaveChangesAsync(cancellationToken);
             
-            var response = createProductrResult.Value.ToResponse();
+            if (saveResult.IsError)
+            {
+                return Result.Error(saveResult.ErrorValue);
+            }
+
+            var response = new ProductResponse
+            {
+                ProductId = createProductrResult.Value.Id,
+                Name = createProductrResult.Value.Name,
+                Description = createProductrResult.Value.Description,
+                Price = createProductrResult.Value.Price,
+                Quantity = createProductrResult.Value.Quantity,
+                Category = createProductrResult.Value.Category.Name
+            };
         
-            return Task.FromResult<Result<ProductResponse>>(response);
+            return Result<ProductResponse>.Success(response);
         }
     }
 }
