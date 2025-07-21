@@ -74,31 +74,26 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     public CreateProductCommandValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty()
-            .MaximumLength(50)
-            .MinimumLength(3)
-            .NotNull();
+            .NotEmpty().WithMessage("Name cannot be empty")
+            .MaximumLength(50).WithMessage("Name is too long")
+            .MinimumLength(3).WithMessage("Name is too short");
 
         RuleFor(x => x.Description)
-            .NotEmpty()
-            .NotNull()
-            .MaximumLength(500)
-            .MinimumLength(3);
+            .NotEmpty().WithMessage("Description cannot be empty")
+            .MaximumLength(500).WithMessage("Description is too long")
+            .MinimumLength(3).WithMessage("Description is too short");
         
         RuleFor(x => x.Price)
-            .GreaterThan(0)
-            .LessThan(10000)
-            .NotNull()
-            .NotEmpty();
+            .GreaterThan(0).WithMessage("Price cannot be negative")
+            .LessThan(10000).WithMessage("Price value is too large.")
+            .NotEmpty().WithMessage("Price cannot be empty");
         
         RuleFor(x => x.Quantity)
-            .GreaterThan(0)
-            .LessThan(10000)
-            .NotNull()
-            .NotEmpty();
+            .GreaterThan(0).WithMessage("Quantity cannot be negative")
+            .LessThan(10000).WithMessage("Quantity value is too large.")
+            .NotEmpty().WithMessage("Quantity cannot be empty");
         
         RuleFor(x => x.Category)
-            .NotNull()
-            .NotEmpty();
+            .NotEmpty().WithMessage("Category cannot be empty");
     }
 }
