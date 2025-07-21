@@ -1,9 +1,17 @@
 using GradTest.Presentation.Common.Configuration.Extensions;
 using GradTest.Application.Common.Configuration.Extensions;
+using GradTest.Domain.BoundedContexts.Orders.Repositories;
+using GradTest.Domain.BoundedContexts.Products.Repositories;
+using GradTest.Infrastructure.BoundedContexts.Ordrs.Repositories;
+using GradTest.Infrastructure.BoundedContexts.Products.Repositories;
+using GradTest.Infrastructure.Common.Repository;
 using GradTest.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var startupLogger = builder.CreateStartupLogger();
 

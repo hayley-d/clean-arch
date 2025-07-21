@@ -20,7 +20,7 @@ public static class CreateOrderEndpoint
                 var result = await sender.Send(command, ct);
             
                 return result.Match(
-                    onSuccess: response => TypedResults.CreatedAtRoute(response, routeName: "GetOrder"), 
+                    onSuccess: response => TypedResults.Created($"/api/orders", response), 
                     onError: error => ErrorResults.Map(error)
                 );
             })

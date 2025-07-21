@@ -1,12 +1,13 @@
 using System.ComponentModel;
 using GradTest.Domain.BoundedContexts.Products.Entities;
+using GradTest.Domain.BoundedContexts.Products.Repositories;
 using GradTest.Infrastructure.Common.Repository;
 using GradTest.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace GradTest.Infrastructure.BoundedContexts.Products.Repositories;
 
-public class ProductRepository : BaseRepository
+public class ProductRepository : BaseRepository, IProductRepository
 {
     public ProductRepository(ApplicationDbContext context) : base(context) { }
     

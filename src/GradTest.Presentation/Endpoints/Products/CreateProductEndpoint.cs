@@ -33,7 +33,7 @@ public static class CreateProductEndpoint
             var result = await sender.Send(command, ct);
             
             return result.Match(
-                onSuccess: response => TypedResults.CreatedAtRoute(response, routeName: "GetProduct"), 
+                onSuccess: response => TypedResults.Created($"/api/products", response),
                 onError: error => ErrorResults.Map(error)
             );
         })
