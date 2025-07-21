@@ -1,10 +1,11 @@
 using FluentValidation;
 using GradTest.Application.BoundedContexts.Orders.Commands;
 using GradTest.Application.BoundedContexts.Products.Commands;
+using GradTest.Presentation.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using GradTest.Presentation.Auth.Claims;
+using ClaimsConstants = GradTest.Presentation.Auth.Claims.ClaimsConstants;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace GradTest.Presentation.Common.Configuration.Extensions;
@@ -20,7 +21,7 @@ public static class WebApplicationBuilderExtensions
 
     public static void AddPresentationDependencies(this WebApplicationBuilder builder, ILogger logger)
     {
-        //builder.AddAuthentication();
+        builder.AddAuthentication();
         
         //builder.AddAuthorization();
         
@@ -33,33 +34,39 @@ public static class WebApplicationBuilderExtensions
 
     private static void AddAuthentication(this WebApplicationBuilder builder)
     {
-        var audience = builder.Configuration["OIDC:Audience"]!;
-        var authority = builder.Configuration["OIDC:Authority"]!;
-        var metadataAddress = builder.Configuration["OIDC:MetadataAddress"]!;
-        
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.Authority = authority;
-            options.Audience = audience;
-            options.MetadataAddress = metadataAddress;
-            options.TokenValidationParameters = new TokenValidationParameters
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = true,
+                        RoleClaimType = ClaimsConstants.Role 
+                    };
+                    
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = KeycloakRolesProcessor.Process
+                    };
+                    
+                    options.Authority = builder.Configuration["OIDC:Authority"];
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration["OIDC:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration["OIDC:Audience"],
+                    };
+                }
+            );
+
+        builder.Services
+            .AddAuthorizationBuilder()
+            .AddPolicy("Admin", policy =>
             {
-                RoleClaimType = ClaimsConstants.Role,
-                ValidateAudience = true,
-                ValidateIssuer = true,
-                ValidAudience = audience,
-                ValidIssuer = authority,
-                ValidateIssuerSigningKey = true,
-                ValidateLifetime = true,
-                TryAllIssuerSigningKeys = true
-            };
-        });
+                policy.RequireRole("admin");
+                policy.RequireAuthenticatedUser();
+            });
     }
     
     private static void AddAuthorization(this WebApplicationBuilder builder)
