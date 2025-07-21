@@ -58,15 +58,7 @@ public class CreateProductCommand : ICommand<Result<ProductResponse>>
                 return Result.Error(saveResult.ErrorValue);
             }
 
-            var response = new ProductResponse
-            {
-                ProductId = createProductrResult.Value.Id,
-                Name = createProductrResult.Value.Name,
-                Description = createProductrResult.Value.Description,
-                Price = createProductrResult.Value.Price,
-                Quantity = createProductrResult.Value.Quantity,
-                Category = createProductrResult.Value.Category.Name
-            };
+            var response = product.ToResponse();
         
             return Result<ProductResponse>.Success(response);
         }

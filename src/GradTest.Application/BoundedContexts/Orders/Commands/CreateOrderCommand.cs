@@ -27,15 +27,21 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
             _orderRepository = orderRepository;
         }
         
-        public Task<Result<OrderResponse>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Result<OrderResponse>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             var createOrderResult = Order.Create(request.UserId, request.Items);
 
             _orderRepository.Add(createOrderResult);
+            var saveResult = await _orderRepository.SaveChangesAsync(cancellationToken);
+            
+            if (saveResult.IsError)
+            {
+                return Result.Error(saveResult.ErrorValue);
+            }
             
             var response = createOrderResult.ToResponse();
         
-            return Task.FromResult<Result<OrderResponse>>(response);
+            return Result<OrderResponse>.Success(response);
         }
     }
 }
