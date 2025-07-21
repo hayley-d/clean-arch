@@ -1,9 +1,8 @@
-using GradTest.Domain.Common.Entities;
 using GradTest.Shared.Monads;
 
 namespace GradTest.Domain.BoundedContexts.Orders.Entities;
 
-public class Order : EntityBase
+public class Order 
 {
     public Guid Id { get; init; }
     public Guid UserId { get; init; }

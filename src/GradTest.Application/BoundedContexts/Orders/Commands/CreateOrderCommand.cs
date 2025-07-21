@@ -1,8 +1,10 @@
 using FluentValidation;
 using GradTest.Application.BoundedContexts.Orders.Mapping;
 using GradTest.Application.Common.Contracts;
+using GradTest.Application.Common.Services;
 using GradTest.Contracts.Orders.Requests;
 using GradTest.Contracts.Orders.Responses;
+using GradTest.Domain.BoundedContexts.ExchangeRates.Repositories;
 using GradTest.Domain.BoundedContexts.Orders.Entities;
 using GradTest.Domain.BoundedContexts.Orders.Repositories;
 using GradTest.Domain.BoundedContexts.Products.Repositories;
@@ -27,16 +29,34 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IExchangeRateRepository _exchangeRateRepository;
+        private readonly IExchangeRateService _exchangeRateService;
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IProductRepository productRepository)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository, IProductRepository productRepository, IExchangeRateRepository exchangeRateRepository, ExchangeRateService exchangeRateService)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _exchangeRateRepository = exchangeRateRepository;
         }
         
         public async Task<Result<OrderResponse>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
+            var rate = await _exchangeRateRepository.GetLatestExchangeRate(cancellationToken);
 
+            if (rate is null or 0)
+            {
+                var liveRate = await _exchangeRateService.GetExchangeRateAsync();
+            
+                if (liveRate is null)
+                    throw new NullReferenceException("Exchange rate not available.");        
+            
+                _exchangeRateRepository.Add(liveRate);
+            
+                await _exchangeRateRepository.SaveChangesAsync(cancellationToken);
+            
+                rate = liveRate.ZAR;
+            }
+            
             var itemsSet = new Dictionary<Guid, int>();
 
             foreach (var item in request.Items)

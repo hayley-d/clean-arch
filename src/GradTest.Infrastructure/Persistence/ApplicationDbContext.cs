@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using GradTest.Domain.BoundedContexts.Orders.Entities;
 using GradTest.Domain.BoundedContexts.Products.Entities;
+using GradTest.Domain.Common.Entities;
 using GradTest.Infrastructure.BoundedContexts.Products.ValueConvertrs;
 using GradTest.Infrastructure.Common.Errors;
 using GradTest.Shared.Monads;
@@ -17,6 +18,8 @@ public class ApplicationDbContext: DbContext
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
+    
+    public DbSet<ExchangeRate> ExchangeRates { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

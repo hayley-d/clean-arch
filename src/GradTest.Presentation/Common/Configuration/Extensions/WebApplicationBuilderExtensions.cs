@@ -1,7 +1,11 @@
 using FluentValidation;
 using GradTest.Application.BoundedContexts.Orders.Commands;
 using GradTest.Application.BoundedContexts.Products.Commands;
+using GradTest.Application.Common.Services;
 using GradTest.Presentation.Auth;
+using GradTest.Shared.Jobs;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -28,6 +32,10 @@ public static class WebApplicationBuilderExtensions
         builder.AddApiServices();
         
         builder.AddCors();
+        
+        builder
+            .SetupHangfireServices()
+            .SetupRucurringJobs();
     }
 
     private static void AddAuthentication(this WebApplicationBuilder builder)
@@ -134,19 +142,18 @@ public static class WebApplicationBuilderExtensions
         }));
     }
     
-    // private static WebApplicationBuilder SetupHangfireServices(this WebApplicationBuilder builder)
-    // {
-    //     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    //     builder.Services.AddHangfire(config => config.UsePostgreSqlStorage(connectionString));
-    //     builder.Services.AddHangfireServer();
-    //     return builder;
-    // }
+    private static WebApplicationBuilder SetupHangfireServices(this WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddHangfire(config => config.UsePostgreSqlStorage(connectionString));
+        builder.Services.AddHangfireServer();
+        return builder;
+    }
 
-    // TODO: setup exchange rate thing
     private static WebApplicationBuilder SetupRucurringJobs(this WebApplicationBuilder builder)
     {
-        //builder.Services.AddHttpClient<IExchangeRateService, ExchangeRateService>();
-        //builder.Services.AddScoped<IExchangeRateSyncJob, ExchangeRateSyncJob>();
+        builder.Services.AddHttpClient<IExchangeRateService, ExchangeRateService>();
+        builder.Services.AddScoped<IExchangeRateSyncJob, ExchangeRateSyncJob>();
         
         return builder;
     }
