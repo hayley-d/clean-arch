@@ -32,7 +32,7 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
         private readonly IExchangeRateRepository _exchangeRateRepository;
         private readonly IExchangeRateService _exchangeRateService;
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IProductRepository productRepository, IExchangeRateRepository exchangeRateRepository, ExchangeRateService exchangeRateService)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository, IProductRepository productRepository, IExchangeRateRepository exchangeRateRepository, IExchangeRateService exchangeRateService)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
@@ -82,13 +82,16 @@ public class CreateOrderCommand : ICommand<Result<OrderResponse>>
                 }
                 
                 product.Quantity -= item.Quantity;
+                
                 _productRepository.Update(product);
+                
                 await _productRepository.SaveChangesAsync(cancellationToken);
             }
             
             var createOrderResult = Order.Create(request.UserId, itemsSet);
 
             _orderRepository.Add(createOrderResult);
+            
             var saveResult = await _orderRepository.SaveChangesAsync(cancellationToken);
             
             if (saveResult.IsError)

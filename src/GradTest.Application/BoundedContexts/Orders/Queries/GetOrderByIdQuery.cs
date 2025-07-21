@@ -23,13 +23,11 @@ public class GetOrderByIdQuery : IQuery<Result<OrderResponse>>
     internal sealed class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Result<OrderResponse>>
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderItemRepository _orderItemRepository;
         private readonly IExchangeRateRepository _exchangeRateRepository;
         
         public GetOrderByIdQueryHandler(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository, IExchangeRateRepository exchangeRateRepository)
         {
             _orderRepository = orderRepository;
-            _orderItemRepository = orderItemRepository;
             _exchangeRateRepository = exchangeRateRepository;
         }
         
@@ -50,10 +48,6 @@ public class GetOrderByIdQuery : IQuery<Result<OrderResponse>>
                 return Result.Error(GenericError.Create("Unable to find exchange rate", "Failed to find exchange rate"));
             }
             
-            var items = await _orderItemRepository.GetOrderItemsAsync(order.Id, cancellationToken);
-            
-            var responseItems = items.Select(orderItem => OrderExtensions.ToOrderItemResponse(orderItem)).ToList();
-
             var orderResponse = order.ToResponse(rate.Value);
 
             return Result<OrderResponse>.Success(orderResponse);
