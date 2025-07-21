@@ -1,3 +1,5 @@
+using GradTest.Shared.Errors;
+
 namespace GradTest.Infrastructure.Common.Errors;
 
 public class DatabaseError: AbstractError

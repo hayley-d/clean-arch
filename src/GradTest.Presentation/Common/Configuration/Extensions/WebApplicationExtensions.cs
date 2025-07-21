@@ -2,7 +2,6 @@ using AspNetCore.Swagger.Themes;
 using Microsoft.EntityFrameworkCore;
 using GradTest.Presentation.Endpoints;
 using GradTest.Infrastructure.Persistence;
-using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace GradTest.Presentation.Common.Configuration.Extensions;
@@ -16,15 +15,23 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
         app.UseHsts();
         app.UseCors();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseExceptionHandler();
+        //app.UseAuthentication();
+        //app.UseAuthorization();
+        app.UseExceptionHandler(errorApp =>
+        {
+            errorApp.Run(async context =>
+            {
+                context.Response.StatusCode = 500;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync("{\"error\": \"An unexpected error occurred.\"}");
+            });
+        });
+        //app.UseExceptionHandler();
 
         app.MapApiEndpoints();
 
         if (app.Environment.IsDevelopment())
         {
-            app.UseSerilogRequestLogging();
         }
 
         await app.MigrateAsync(args);

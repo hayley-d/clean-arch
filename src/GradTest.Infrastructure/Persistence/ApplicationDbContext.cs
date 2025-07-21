@@ -3,19 +3,20 @@ using GradTest.Domain.BoundedContexts.Orders.Entities;
 using GradTest.Domain.BoundedContexts.Products.Entities;
 using GradTest.Infrastructure.BoundedContexts.Products.ValueConvertrs;
 using GradTest.Infrastructure.Common.Errors;
+using GradTest.Shared.Monads;
 
 namespace GradTest.Infrastructure.Persistence;
 
 public class ApplicationDbContext: DbContext
 {
-    public DbSet<Order> Orders { get; set; } = null!;
-    public DbSet<OrderItem> OrderItems { get; set; } = null!;
-    public DbSet<Product> Products { get; set; } = null!;
-
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
+    
+    public DbSet<Order> Orders { get; set; } = null!;
+    public DbSet<OrderItem> OrderItems { get; set; } = null!;
+    public DbSet<Product> Products { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

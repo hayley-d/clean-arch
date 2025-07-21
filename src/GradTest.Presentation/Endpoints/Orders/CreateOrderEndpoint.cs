@@ -13,7 +13,7 @@ public static class CreateOrderEndpoint
 
     public static IEndpointRouteBuilder MapCreateOrderEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost(ApiEndpoints.Products.CreateProduct, async ([FromBody] CreateOrderRequest request, ISender sender, CancellationToken ct) =>
+        app.MapPost(ApiEndpoints.Orders.CreateOrder, async ([FromBody] CreateOrderRequest request, ISender sender, CancellationToken ct) =>
             {
                 var userId = new Guid();
                 var command = new CreateOrderCommand(userId, request.Items);

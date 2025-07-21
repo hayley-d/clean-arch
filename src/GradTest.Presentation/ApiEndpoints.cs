@@ -9,7 +9,7 @@ public static class ApiEndpoints
         private const string ProductBase = $"{ApiBase}/products";
         public const string GetProductById = $"{ProductBase}/{{id}}";
         public const string CreateProduct = ProductBase;
-        public const string ListProducts = ProductBase;
+        public const string ListProducts = $"{ProductBase}";
     }
     
     public static class Orders

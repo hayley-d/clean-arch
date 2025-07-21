@@ -12,7 +12,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageReference Include="MassTransit" Version="[8.4.1]" />
     <PackageReference Include="MassTransit.EntityFrameworkCore" Version="[8.4.1]" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.3.0" />

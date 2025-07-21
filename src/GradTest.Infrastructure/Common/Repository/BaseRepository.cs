@@ -1,6 +1,7 @@
 using GradTest.Domain.Common.Contracts;
 using GradTest.Infrastructure.Common.Errors;
 using GradTest.Infrastructure.Persistence;
+using GradTest.Shared.Monads;
 
 namespace GradTest.Infrastructure.Common.Repository;
 

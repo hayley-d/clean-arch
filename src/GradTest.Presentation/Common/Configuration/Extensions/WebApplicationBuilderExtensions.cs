@@ -1,13 +1,10 @@
 using FluentValidation;
 using GradTest.Application.BoundedContexts.Orders.Commands;
 using GradTest.Application.BoundedContexts.Products.Commands;
-using GradTest.Domain.BoundedContexts.Products.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using GradTest.Presentation.Auth.Claims;
-using GradTest.Presentation.Auth.Services;
-using MediatR;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace GradTest.Presentation.Common.Configuration.Extensions;
@@ -23,9 +20,9 @@ public static class WebApplicationBuilderExtensions
 
     public static void AddPresentationDependencies(this WebApplicationBuilder builder, ILogger logger)
     {
-        builder.AddAuthentication();
+        //builder.AddAuthentication();
         
-        builder.AddAuthorization();
+        //builder.AddAuthorization();
         
         builder.AddSwagger();
         
@@ -67,13 +64,13 @@ public static class WebApplicationBuilderExtensions
     
     private static void AddAuthorization(this WebApplicationBuilder builder)
     {
-        builder.Services
-            .AddAuthorizationBuilder()
-            .AddPolicy(Policies.Admin, policy =>
-            {
-                policy.RequireRole(nameof(Role.Admin));
-                policy.RequireAuthenticatedUser();
-            });
+        // builder.Services
+        //     .AddAuthorizationBuilder()
+        //     .AddPolicy(Policies.Admin, policy =>
+        //     {
+        //         policy.RequireRole(nameof(Role.Admin));
+        //         policy.RequireAuthenticatedUser();
+        //     });
     }
 
     private static void AddSwagger(this WebApplicationBuilder builder)
@@ -175,7 +172,7 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
 
-        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        //builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
  
     }
     
@@ -241,18 +238,19 @@ public static class WebApplicationBuilderExtensions
         return builder;
     }
     
-    private static WebApplicationBuilder SetupHangfireServices(this WebApplicationBuilder builder)
-    {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddHangfire(config => config.UsePostgreSqlStorage(connectionString));
-        builder.Services.AddHangfireServer();
-        return builder;
-    }
+    // private static WebApplicationBuilder SetupHangfireServices(this WebApplicationBuilder builder)
+    // {
+    //     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    //     builder.Services.AddHangfire(config => config.UsePostgreSqlStorage(connectionString));
+    //     builder.Services.AddHangfireServer();
+    //     return builder;
+    // }
 
+    // TODO: setup exchange rate thing
     private static WebApplicationBuilder SetupRucurringJobs(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHttpClient<IExchangeRateService, ExchangeRateService>();
-        builder.Services.AddScoped<IExchangeRateSyncJob, ExchangeRateSyncJob>();
+        //builder.Services.AddHttpClient<IExchangeRateService, ExchangeRateService>();
+        //builder.Services.AddScoped<IExchangeRateSyncJob, ExchangeRateSyncJob>();
         
         return builder;
     }
