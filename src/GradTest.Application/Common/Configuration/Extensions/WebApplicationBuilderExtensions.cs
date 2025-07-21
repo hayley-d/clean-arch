@@ -10,10 +10,7 @@ public static class WebApplicationBuilderExtensions
     public static void AddApplicationDependencies(this WebApplicationBuilder builder, ILogger logger)
     {
         builder.AddMediatR();
-        logger.LogInformation("Configured: {@ServiceName}", "MediatR");
-        
         builder.AddFluentValidation();
-        logger.LogInformation("Configured: {@ServiceName}", "FluentValidation");
     }
     
     private static void AddMediatR(this WebApplicationBuilder builder)
