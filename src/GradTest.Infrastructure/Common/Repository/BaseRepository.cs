@@ -32,28 +32,13 @@ public class BaseRepository: IRepository
         Context.Update(entity);
     }
     
-    public void UpdateRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
-    {
-        Context.UpdateRange(entities);
-    }
-    
     public void Delete<TEntity>(TEntity entity) where TEntity : class
     {
         Context.Remove(entity);
     }
     
-    public void DeleteRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
-    {
-        Context.RemoveRange(entities);
-    }
-    
     public void Add<TEntity>(TEntity entity) where TEntity : class
     {
         Context.Add(entity);
-    }
-    
-    public void AddRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
-    {
-        Context.AddRange(entities);
     }
 }

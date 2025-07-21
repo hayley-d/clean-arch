@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using GradTest.Application.Common.Errors;
 using GradTest.Domain.Common.Rules;
-using GradTest.Infrastructure.Common.Errors;
 using GradTest.Presentation.Common.Constants;
 using GradTest.Shared.Errors;
 
@@ -15,7 +14,6 @@ public static class ErrorResults
         RuleError e => BadRequest(e),
         ValidationError e => Validation(e),
         NotFoundError e => NotFound(e),
-        DatabaseError e => InternalServerError(e),
         not null => BadRequest(error),
         _ => UnknownError()
     };
@@ -62,17 +60,6 @@ public static class ErrorResults
             StatusCodes.Status400BadRequest, 
             "Unknown error",
             StatusCodeLinks.BadRequest
-        );
-    }
-    
-    private static ProblemHttpResult InternalServerError(AbstractError error)
-    {
-        return TypedResults.Problem(
-            error.ErrorDetail, 
-            null,
-            StatusCodes.Status500InternalServerError, 
-            error.Title,
-            StatusCodeLinks.InternalServerError
         );
     }
 }

@@ -1,4 +1,6 @@
 using FluentValidation;
+using GradTest.Application.BoundedContexts.Orders.Commands;
+using GradTest.Application.BoundedContexts.Products.Commands;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

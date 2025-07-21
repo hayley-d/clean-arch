@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Auth\Services\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>
