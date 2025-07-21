@@ -40,17 +40,14 @@ public class GetOrderByIdQuery : IQuery<Result<OrderResponse>>
 
             var items = await _orderItemRepository.GetOrderItemsAsync(order.Id, cancellationToken);
             
-            var responseItems = new List<OrderItemResponse>();
-
-            foreach (var orderItem in items)
-            {
-                responseItems.Add(new OrderItemResponse
+            var responseItems = items.Select(orderItem => 
+                new OrderItemResponse
                 {
-                    ProductId = orderItem.ProductId,
-                    Quantity = orderItem.Quantity,
-                });
-            }
-            
+                    ProductId = orderItem.ProductId, Quantity = orderItem.Quantity, 
+                    
+                })
+                .ToList();
+
             var orderResponse = new OrderResponse
             {
                 OrderId = order.Id,

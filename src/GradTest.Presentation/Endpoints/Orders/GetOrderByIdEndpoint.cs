@@ -1,18 +1,13 @@
-using System.Text.Json;
-using GradTest.Application.BoundedContexts.Orders.Commands;
 using GradTest.Application.BoundedContexts.Orders.Queries;
-using GradTest.Contracts.Orders.Requests;
 using GradTest.Presentation.Common.Extensions;
 using GradTest.Shared.Monads;
 using MediatR;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GradTest.Presentation.Endpoints.Orders;
 
 public static class GetOrderByIdEndpoint
 {
-    public const string Name = "GetOrderById";
+    private const string Name = "GetOrderById";
 
     public static IEndpointRouteBuilder MapGetOrderByIdEndpoint(this IEndpointRouteBuilder app)
     {

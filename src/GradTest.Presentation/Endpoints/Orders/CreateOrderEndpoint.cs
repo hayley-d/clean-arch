@@ -10,13 +10,13 @@ namespace GradTest.Presentation.Endpoints.Orders;
 
 public static class CreateOrderEndpoint
 {
-    public const string Name = "CreateOrder";
+    private const string Name = "CreateOrder";
 
     public static IEndpointRouteBuilder MapCreateOrderEndpoint(this IEndpointRouteBuilder app)
     {
         app.MapPost(ApiEndpoints.Orders.CreateOrder, async (HttpContext httpContext,[FromBody] CreateOrderRequest request, ISender sender, CancellationToken ct) =>
             {
-                var userId = httpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                var userId = httpContext.User.FindFirst(Auth.Claims.ClaimsConstants.UserId)?.Value;
 
                 if (userId is null)
                 {

@@ -7,17 +7,13 @@ public static class OrderExtensions
 {
     public static OrderResponse ToResponse(this Order order)
     {
-        var responseItems = new List<OrderItemResponse>();
-        
-        foreach (var item in order.Items)
-        {
-            responseItems.Add(new OrderItemResponse
+        var responseItems = order.Items.Select(item => 
+            new OrderItemResponse
             {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-            });
-        }
-        
+                ProductId = item.ProductId, Quantity = item.Quantity, 
+                
+            }).ToList();
+
         return new OrderResponse
         {
             OrderId = order.Id,
