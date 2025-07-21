@@ -86,17 +86,17 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 {
     public CreateOrderCommandValidator()
     {
-        RuleFor(x => x.UserId)
-            .NotNull()
+        RuleFor(command => command.UserId)
             .NotEmpty();
         
-        RuleFor(x => x.Items)
-            .NotNull()
+        RuleFor(command => command.Items)
             .NotEmpty();
 
-        RuleForEach(x => x.Items).ChildRules(item =>
+        RuleForEach(command => command.Items).ChildRules(item =>
         {
-            item.RuleFor(x => x.Quantity).GreaterThan(0).LessThanOrEqualTo(10000);
+            item.RuleFor(orderItem => orderItem.Quantity)
+                .GreaterThan(0)
+                .LessThanOrEqualTo(10000);
         });
     }
 }
