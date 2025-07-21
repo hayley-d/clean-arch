@@ -1,5 +1,6 @@
 using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Orders.Responses;
+using GradTest.Domain.BoundedContexts.OrderItems.Repositories;
 using GradTest.Domain.BoundedContexts.Orders.Repositories;
 using GradTest.Shared.Errors;
 using GradTest.Shared.Monads;
@@ -20,11 +21,12 @@ public class GetOrderByIdQuery : IQuery<Result<OrderResponse>>
     internal sealed class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Result<OrderResponse>>
     {
         private readonly IOrderRepository _orderRepository;
-
+        private readonly IOrderItemRepository _orderItemRepository;
         
-        public GetOrderByIdQueryHandler(IOrderRepository orderRepository)
+        public GetOrderByIdQueryHandler(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository)
         {
             _orderRepository = orderRepository;
+            _orderItemRepository = orderItemRepository;
         }
         
         public async Task<Result<OrderResponse>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
@@ -36,11 +38,24 @@ public class GetOrderByIdQuery : IQuery<Result<OrderResponse>>
                 return Result.Error(GenericError.Create("Order not found", "Order not found in the database."));
             }
 
+            var items = await _orderItemRepository.GetOrderItemsAsync(order.Id, cancellationToken);
+            
+            var responseItems = new List<OrderItemResponse>();
+
+            foreach (var orderItem in items)
+            {
+                responseItems.Add(new OrderItemResponse
+                {
+                    ProductId = orderItem.ProductId,
+                    Quantity = orderItem.Quantity,
+                });
+            }
+            
             var orderResponse = new OrderResponse
             {
                 OrderId = order.Id,
                 CustomerId = Guid.NewGuid(),
-                Items = order.Items,
+                Items = responseItems,
             };
 
             return Result<OrderResponse>.Success(orderResponse);

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using GradTest.Application.BoundedContexts.Orders.Commands;
 using GradTest.Application.BoundedContexts.Orders.Queries;
 using GradTest.Contracts.Orders.Requests;
@@ -21,7 +22,10 @@ public static class GetOrderByIdEndpoint
                 var result = await sender.Send(query, ct);
 
                 return result.Match(
-                    onSuccess: response => TypedResults.Ok(response),
+                    onSuccess: response =>
+                    {
+                        return TypedResults.Ok(response);
+                    },
                     onError: error => ErrorResults.Map(error)
                 );
             })
