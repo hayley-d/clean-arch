@@ -1,3 +1,4 @@
+using GradTest.Application.BoundedContexts.Products.Mapping;
 using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Products.Responses;
 using GradTest.Domain.BoundedContexts.Products.Repositories;
@@ -20,7 +21,7 @@ public class ListProdutsQuery : IQuery<Result<List<ProductResponse>>>
         public async Task<Result<List<ProductResponse>>> Handle(ListProdutsQuery request, CancellationToken cancellationToken)
         {
             var items = await _productRepository.ListAsync(cancellationToken);
-            var response  = items.Select(item => Mapping.ProductExtensions.ToResponse(item)).ToList();
+            var response  = items.Select(item => item.ToResponse()).ToList();
 
             return Result<List<ProductResponse>>.Success(response);
         }

@@ -1,3 +1,4 @@
+using GradTest.Application.BoundedContexts.Products.Mapping;
 using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Products.Responses;
 using GradTest.Domain.BoundedContexts.Products.Repositories;
@@ -35,7 +36,7 @@ public class GetProductByIdQuery : IQuery<Result<ProductResponse>>
                 return Result.Error(GenericError.Create("Product not found", "Product not found in the database."));
             }
 
-            var response = Mapping.ProductExtensions.ToResponse(product);
+            var response = product.ToResponse();
             
             return Result<ProductResponse>.Success(response);
         }
