@@ -2,13 +2,12 @@ using GradTest.Application.BoundedContexts.Products.Queries;
 using GradTest.Presentation.Common.Extensions;
 using GradTest.Shared.Monads;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GradTest.Presentation.Endpoints.Products;
 
 public static class GetProductByIdEndpoint
 {
-    public const string Name = "GetProduct";
+    private const string Name = "GetProduct";
 
     public static IEndpointRouteBuilder MapGetProductByIdEndpoint(this IEndpointRouteBuilder app)
     {
@@ -22,7 +21,7 @@ public static class GetProductByIdEndpoint
                     onError: error => ErrorResults.Map(error)
                 );
             })
-            .WithName(Name); // Important for CreatedAtRoute
+            .WithName(Name);
 
         return app;
     }

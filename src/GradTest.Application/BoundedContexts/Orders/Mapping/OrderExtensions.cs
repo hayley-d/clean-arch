@@ -5,13 +5,25 @@ namespace GradTest.Application.BoundedContexts.Orders.Mapping;
 
 public static class OrderExtensions
 {
-    public static OrderResponse ToResponse(this Order order)
+    public static OrderResponse ToResponse(this Order order, decimal rate)
     {
+        var responseItems = order.Items.Select(item => ToOrderItemResponse(item)).ToList();
+
         return new OrderResponse
         {
             OrderId = order.Id,
             CustomerId = order.UserId,
-            Items = order.Items,
+            Items = responseItems,
+            ZarExchangeRate = rate
+        };
+    }
+
+    public static OrderItemResponse ToOrderItemResponse(this OrderItem orderItem)
+    {
+        return new OrderItemResponse
+        {
+            ProductId = orderItem.ProductId,
+            Quantity = orderItem.Quantity,
         };
     }
 }

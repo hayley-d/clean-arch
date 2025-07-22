@@ -1,9 +1,8 @@
-using GradTest.Domain.Common.Entities;
 using GradTest.Shared.Monads;
 
 namespace GradTest.Domain.BoundedContexts.Orders.Entities;
 
-public class Order : EntityBase
+public class Order 
 {
     public Guid Id { get; init; }
     public Guid UserId { get; init; }
@@ -21,9 +20,15 @@ public class Order : EntityBase
         Items = items;
     }
 
-    public static Order Create( Guid userId, List<OrderItem> items)
+    public static Order Create( Guid userId, Dictionary<Guid,int> items)
     {
-        var order = new Order(userId, items);
+        var orderId = Guid.NewGuid();
+        var convertedItems = new List<OrderItem>();
+        foreach(var pair in items)
+        {
+            convertedItems.Add(new OrderItem(orderId, pair.Key, pair.Value));
+        }
+        var order = new Order(userId, convertedItems);
         
         return Result<Order>.Success(order);
     }

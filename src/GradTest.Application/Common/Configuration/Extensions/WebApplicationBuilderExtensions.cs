@@ -1,4 +1,7 @@
 using FluentValidation;
+using GradTest.Application.BoundedContexts.Orders.Commands;
+using GradTest.Application.BoundedContexts.Products.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,10 +13,7 @@ public static class WebApplicationBuilderExtensions
     public static void AddApplicationDependencies(this WebApplicationBuilder builder, ILogger logger)
     {
         builder.AddMediatR();
-        logger.LogInformation("Configured: {@ServiceName}", "MediatR");
-        
         builder.AddFluentValidation();
-        logger.LogInformation("Configured: {@ServiceName}", "FluentValidation");
     }
     
     private static void AddMediatR(this WebApplicationBuilder builder)
@@ -24,7 +24,15 @@ public static class WebApplicationBuilderExtensions
         {
             x.RegisterServicesFromAssembly(applicationAssembly);
         });
+        
+        builder.Services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
+        
+        builder.Services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(CreateProductCommand).Assembly));
 
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateProductCommandValidator>();
     }
     
     private static void AddFluentValidation(this WebApplicationBuilder builder)

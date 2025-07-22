@@ -15,8 +15,6 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
         app.UseHsts();
         app.UseCors();
-        //app.UseAuthentication();
-        //app.UseAuthorization();
         app.UseExceptionHandler(errorApp =>
         {
             errorApp.Run(async context =>
@@ -26,7 +24,6 @@ public static class WebApplicationExtensions
                 await context.Response.WriteAsync("{\"error\": \"An unexpected error occurred.\"}");
             });
         });
-        //app.UseExceptionHandler();
 
         app.MapApiEndpoints();
 

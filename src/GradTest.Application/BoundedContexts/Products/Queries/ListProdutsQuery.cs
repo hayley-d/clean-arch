@@ -1,7 +1,9 @@
+using GradTest.Application.BoundedContexts.Products.Mapping;
+using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Products.Responses;
 using GradTest.Domain.BoundedContexts.Products.Repositories;
+using GradTest.Shared.Monads;
 using MediatR;
-using Microsoft.AspNetCore.Http.Metadata;
 
 namespace GradTest.Application.BoundedContexts.Products.Queries;
 
@@ -18,21 +20,9 @@ public class ListProdutsQuery : IQuery<Result<List<ProductResponse>>>
         
         public async Task<Result<List<ProductResponse>>> Handle(ListProdutsQuery request, CancellationToken cancellationToken)
         {
-            var items = await _productRepository.ListAsync();
-            var response  = new List<ProductResponse>();
-            
-            foreach (var item in items)
-            {
-                response.Add(new ProductResponse
-                {
-                    ProductId = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                    Price = item.Price,
-                    Quantity = item.Quantity,
-                    Category = item.Category.Name
-                });
-            }
+            var items = await _productRepository.ListAsync(cancellationToken);
+            var response  = items.Select(item => item.ToResponse()).ToList();
+
             return Result<List<ProductResponse>>.Success(response);
         }
     }

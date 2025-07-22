@@ -1,8 +1,12 @@
+using FluentValidation;
 using GradTest.Application.BoundedContexts.Products.Mapping;
+using GradTest.Application.Common.Contracts;
 using GradTest.Contracts.Products.Responses;
 using GradTest.Domain.BoundedContexts.Products.Entities;
 using GradTest.Domain.BoundedContexts.Products.Enums;
 using GradTest.Domain.BoundedContexts.Products.Repositories;
+using GradTest.Shared.Errors;
+using GradTest.Shared.Monads;
 using MediatR;
 
 namespace GradTest.Application.BoundedContexts.Products.Commands;
@@ -62,5 +66,34 @@ public class CreateProductCommand : ICommand<Result<ProductResponse>>
         
             return Result<ProductResponse>.Success(response);
         }
+    }
+}
+
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+{
+    public CreateProductCommandValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Name cannot be empty")
+            .MaximumLength(50).WithMessage("Name is too long")
+            .MinimumLength(3).WithMessage("Name is too short");
+
+        RuleFor(x => x.Description)
+            .NotEmpty().WithMessage("Description cannot be empty")
+            .MaximumLength(500).WithMessage("Description is too long")
+            .MinimumLength(3).WithMessage("Description is too short");
+        
+        RuleFor(x => x.Price)
+            .GreaterThan(0).WithMessage("Price cannot be negative")
+            .LessThan(10000).WithMessage("Price value is too large.")
+            .NotEmpty().WithMessage("Price cannot be empty");
+        
+        RuleFor(x => x.Quantity)
+            .GreaterThan(0).WithMessage("Quantity cannot be negative")
+            .LessThan(10000).WithMessage("Quantity value is too large.")
+            .NotEmpty().WithMessage("Quantity cannot be empty");
+        
+        RuleFor(x => x.Category)
+            .NotEmpty().WithMessage("Category cannot be empty");
     }
 }

@@ -12,7 +12,7 @@ namespace GradTest.Presentation.Endpoints.Products;
 
 public static class CreateProductEndpoint
 {
-    public const string Name = "CreateProduct";
+    private const string Name = "CreateProduct";
 
     public static IEndpointRouteBuilder MapCreateProductEndpoint(this IEndpointRouteBuilder app)
     {
@@ -37,7 +37,8 @@ public static class CreateProductEndpoint
                 onError: error => ErrorResults.Map(error)
             );
         })
-            .WithName(Name);
+            .WithName(Name)
+            .RequireAuthorization();
         
         return app;
     }

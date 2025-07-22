@@ -7,7 +7,7 @@ namespace GradTest.Presentation.Endpoints.Products;
 
 public static class ListProductsEndpoint
 {
-    public const string Name = "ListProducts";
+    private const string Name = "ListProducts";
 
     public static IEndpointRouteBuilder MapListProductsEndpoint(this IEndpointRouteBuilder app)
     {
